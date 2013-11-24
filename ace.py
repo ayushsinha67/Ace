@@ -1,7 +1,29 @@
 #ACE"
-VER = "1.0"
+VER = "1.2"
 CREATOR = "Ayush Sinha"
 YEAR = "2012"
+
+#starting pressed key bug
+#start with a mission screen
+#change startin screen title FONT - "ACE"
+#include the zeppelin
+#include "after death" message
+
+#	name for each level
+#	user interface
+# 	#engine sounds, 
+#	first level
+#		mission statements - reach and destroy enemy base - airship arrives at the end
+#		storyline	
+#   second level 
+    #NIGHT BACKGROUND, THUNDER!!
+        #include air alarm sound
+        #destroy night time towers, bomber plane
+        #destroy enemy bases
+#    third level
+        #warships, sea, harbour
+#    different music for different level
+    
 
 #IMPORT
 import simplegui
@@ -68,6 +90,7 @@ turret_fire_ss_num = [16, 1]
 explosion1_ss_num = [4, 4]
 explosion2_ss_num = [16, 1]
 explosion3_ss_num = [8, 5]
+explosion4_ss_num = [8, 4]
 smoke1_ss_num = [8, 5]
 
 #CLASSES         
@@ -236,7 +259,6 @@ class Animation:
      #next image
      def next_image(self):
         if self.animate_it:
-            self.sound.play()
             self.current_center[0] += self.frame_size[0] 
             self.ss_index[0] += 1
             if ( self.ss_index[0] == self.ss_num[0] ):
@@ -259,6 +281,7 @@ class Animation:
         self.current_center[0] = self.frame_size[0]//2
         self.current_center[1] = self.frame_size[1]//2
         self.ss_index = [0, 0]
+        self.sound.play()
         self.animate_it = True
         
      #draw
@@ -448,12 +471,9 @@ class Turret:
         hits = 0
         for ext in ext_list:
             if ( distance( ext.get_pos(), [self.pos, CANVAS_HEIGHT] ) <= ( self.radius + self.turret_len ) ):
-                remove.append( ext )
-        for ext in remove:
-            self.cause_damage(item_type)
-            hits += 1
-            x = ext_list.pop( ext_list.index(ext) )
-            del x	
+                ext.explode()
+                self.cause_damage(item_type)
+                hits += 1
         return hits
     
     # explode
@@ -572,9 +592,9 @@ class FighterBullet(Bullet):
                     bullet_vel, 
                     bullet_acc ):
         
-        blow_anim = Animation(	images['explosion2_ss_image'], 
-                                sounds['explosion2_sound'], 
-                                explosion2_ss_num )
+        blow_anim = Animation(	images['explosion4_ss_image'], 
+                                sounds['bullet_hit'], 
+                                explosion4_ss_num )
         Bullet.__init__(self,
                         bullet_colour, 
                         bullet_size, 
@@ -1594,6 +1614,7 @@ URL = {
 ,'explosion1_ss_image' 	:	"explosion1.png"
 ,'explosion2_ss_image' 	:	"explosion2.png"
 ,'explosion3_ss_image' 	:	"explosion3.png"
+,'explosion4_ss_image'	:	"explosion4.png"
 ,'smoke1_ss_image' 		:	"smoke1.png"
 ,'thunderbolt_ui_button':	"thunderbolt_ui_button.png"
 ,'spitfire_ui_button'	:	"spitfire_ui_button.png"
@@ -1618,6 +1639,7 @@ SOUND = {
 ,'explosion1_sound' 			:	"https://dl.dropbox.com/u/20531919/Python%20Game%20Programming/sounds/explosion1.mp3"
 ,'explosion2_sound' 			:	"https://dl.dropbox.com/u/20531919/Python%20Game%20Programming/sounds/explosion2.mp3"
 ,'explosion3_sound' 			:	"https://dl.dropbox.com/u/20531919/Python%20Game%20Programming/sounds/explosion2.mp3"
+,'bullet_hit'					:	"https://dl.dropbox.com/u/20531919/Python%20Game%20Programming/sounds/bullet_hit.wav"
 ,'no_sound' 					:	"" }
 
 #==========================================================
@@ -1670,5 +1692,3 @@ game_speed_timer.start()
 
 #start frame
 frame.start()
-
-
